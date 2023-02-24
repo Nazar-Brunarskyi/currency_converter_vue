@@ -11,18 +11,20 @@ interface DataProps {
   convertedCurrency: string,
   amountOfCurrencyToConvert: number,
   amountOfConvertedCurrency: number,
+  conversionLimit: number,
 }
 
 export default defineComponent({
   data(): DataProps { 
     return {
       rates: null,
-      currencyToConvert: 'USD',
-      convertedCurrency: 'BTC',
+      currencyToConvert: 'UAH',
+      convertedCurrency: 'USD',
       currentRateOfCurrencyToConvert: 0,
       currentRateOfConvertedCurrency : 0,
       amountOfCurrencyToConvert: 0,
       amountOfConvertedCurrency: 0,
+      conversionLimit: 10000
     };
   },
 
@@ -48,6 +50,10 @@ export default defineComponent({
       if (this.rates) {
         this.currentRateOfCurrencyToConvert = +this.rates[this.currencyToConvert]
         this.amountOfConvertedCurrency = +this.newAmountConvertedCurrency;
+
+        if (this.isLimitReached) {
+          this.calculateTheBiggestAmount();
+        }
       }
     },
 
@@ -55,19 +61,33 @@ export default defineComponent({
       if (this.rates) {
         this.currentRateOfConvertedCurrency = +this.rates[this.convertedCurrency]
         this.amountOfConvertedCurrency = +this.newAmountConvertedCurrency
+
+        if (this.isLimitReached) {
+          this.calculateTheBiggestAmount();
+        }
       }
     },
 
     amountOfCurrencyToConvert() {
-      // if (this.amountOfCurrencyToConvert * this.currentRateOfCurrencyToConvert > 10000 ) {
-      //   this.amountOfCurrencyToConvert = 10000 * this.currentRateOfCurrencyToConvert
-      //   console.log(this.currentRateOfCurrencyToConvert);
-      // }
-      this.amountOfConvertedCurrency = +this.newAmountConvertedCurrency;
+      if (!this.rates){
+        return;
+      }
+      
+      if (this.isLimitReached) {
+        this.calculateTheBiggestAmount();
+
+        return;
+      }
+
+      if (this.$refs['outcoming__currency'] !== document.activeElement) {
+        this.amountOfConvertedCurrency = this.newAmountConvertedCurrency 
+      }
     },
 
     amountOfConvertedCurrency() {
-      this.amountOfCurrencyToConvert = +this.newAmountOfConvertedCurrency
+      if (this.$refs['incoming__currency'] !== document.activeElement) { 
+        this.amountOfCurrencyToConvert = this.newAmountOfConvertedCurrency
+      }
     },
   },
 
@@ -79,18 +99,40 @@ export default defineComponent({
         allCurrenciesNames.push(nameOfCurrency)
       }
 
-      return allCurrenciesNames;
+      return allCurrenciesNames.sort((a, b) => a.localeCompare(b));
     },
 
-    newAmountConvertedCurrency (){
-      return this.amountOfCurrencyToConvert 
+    newAmountConvertedCurrency() {
+      return this.amountOfCurrencyToConvert
         / this.currentRateOfCurrencyToConvert
         * this.currentRateOfConvertedCurrency
     },
-    newAmountOfConvertedCurrency () {
-      return this.amountOfConvertedCurrency 
+
+    newAmountOfConvertedCurrency() {
+      return this.amountOfConvertedCurrency
         / (this.currentRateOfConvertedCurrency / this.currentRateOfCurrencyToConvert)
+    },
+
+    isLimitReached() {
+      if (this.rates) {
+        return this.amountOfCurrencyToConvert
+          / +this.rates[this.currencyToConvert] > this.conversionLimit;
+      }
+
+      return false;
     }
+  },
+
+  methods: {
+    calculateTheBiggestAmount() {
+      if (this.rates) {
+        this.amountOfCurrencyToConvert = +(this.conversionLimit * +this.rates[this.currencyToConvert])
+          .toFixed(2);
+
+        this.amountOfConvertedCurrency = +(this.conversionLimit * +this.rates[this.convertedCurrency])
+          .toFixed(2);
+      }
+    },
   }
 });
 
@@ -141,6 +183,7 @@ export default defineComponent({
       Amount of incoming currency:
     </label>
     <input 
+      ref="incoming__currency"
       type="number" 
       class="form__input"
       id="from_amount" 
@@ -158,6 +201,7 @@ export default defineComponent({
       Amount of converted currency:
     </label>
     <input 
+      ref="outcoming__currency"
       type="number"
       class="form__input"
       id="to_amount"
@@ -167,8 +211,6 @@ export default defineComponent({
       v-model="amountOfConvertedCurrency"
       required
     >
-
-    <!-- <input type="submit" value="Конвертувати"> -->
   </form>
 </template>
 
