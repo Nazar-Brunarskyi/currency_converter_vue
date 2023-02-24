@@ -1,9 +1,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getMoney } from './API/getData'
+import CurrencyRates from './components/Currency-rates.vue'
 import type { Rates } from './types/ratesType'
 
-interface DataProps {
+interface State {
   rates: Rates | null;
   currentRateOfCurrencyToConvert: number,
   currentRateOfConvertedCurrency: number,
@@ -15,7 +16,11 @@ interface DataProps {
 }
 
 export default defineComponent({
-  data(): DataProps { 
+  components: {
+    CurrencyRates,
+  },
+
+  data(): State { 
     return {
       rates: null,
       currencyToConvert: 'UAH',
@@ -182,6 +187,7 @@ export default defineComponent({
     >
       Amount of incoming currency:
     </label>
+
     <input 
       ref="incoming__currency"
       type="number" 
@@ -200,6 +206,7 @@ export default defineComponent({
     >
       Amount of converted currency:
     </label>
+
     <input 
       ref="outcoming__currency"
       type="number"
@@ -212,6 +219,6 @@ export default defineComponent({
       required
     >
   </form>
-</template>
 
-<style scoped></style>
+  <CurrencyRates git />
+</template>
