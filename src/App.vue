@@ -34,6 +34,13 @@ export default defineComponent({
 
     this.rates = cachedExchangeRates
   },
+
+  methods: {
+    updateRates(newRates: Rates) {
+      this.rates = newRates;
+      localStorage.setItem('exchangeRates', JSON.stringify(newRates))
+    }
+  }
 });
 
 </script>
@@ -41,5 +48,8 @@ export default defineComponent({
 <template>
   <CurrencyConverter :rates="rates" v-if="rates"/>
 
-  <CurrencyRates :rates="rates"/>
+  <CurrencyRates 
+    :rates="rates"
+    @update-rates="updateRates"
+  />
 </template>

@@ -10,7 +10,7 @@ body {
 
 .title {
 	text-align: center;
-	margin: $basic-margin;
+	margin: $basic-margin-m;
 	font-size: 36px;
 	font-weight: bold;
 }
@@ -75,4 +75,55 @@ tr:nth-child(even) {
 
 tr:hover {
 	background-color: #ddd;
+}
+
+.flex-container {
+	display: flex;
+	justify-content: space-around;
+
+	&--between {
+		justify-content: space-between;
+	}
+}
+
+.button {
+	display: inline-block;
+	width: 30%;
+	margin-bottom: $button-margin-s;
+	background-color: #007BFF;
+	color: #fff;
+	padding: 10px 20px;
+	border: none;
+	border-radius: 5px;
+	font-size: 18px;
+	transition: background-color 0.3s ease;
+	cursor: pointer;
+
+	&:hover {
+		background-color: #0069D9;
+	}
+
+	&:disabled {
+		background-color: #007bff7d;
+	}
+}
+
+.blur-blok {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100vh;
+	z-index: 2;
+	background-color: rgba(0, 0, 0, 0.433);
+}
+
+.pop-up {
+	position: fixed;
+	width: 100%;
+
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 3;
 }

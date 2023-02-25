@@ -1,11 +1,16 @@
 <script lang="ts">
+import { getMoney } from '@/API/getData';
 import type { Rates } from '@/types/ratesType';
 import { defineComponent, type PropType } from 'vue';
+import { checkingOfDigitsAfterComa } from '../helpers/checkingOfDigitsAfterComa'
+import AddCurrency from './addCurrency.vue';
 
 interface State {
   selectedCurrency: string,
-  defaultCurrencies: string[];
-  defaultCurrenciesRates: string[];
+  defaultCurrencies: string[],
+  defaultCurrenciesRates: string[],
+  canUpdateRates: boolean,
+  isAddCurrencyVisible: boolean;
 }
 
 export default defineComponent({
@@ -16,30 +21,73 @@ export default defineComponent({
     }
   },
 
+  emits: ["updateRates"],
+
+  components: { AddCurrency },
+
   data(): State {
     return {
-      selectedCurrency: 'USD',
-      defaultCurrencies: ['USD', 'EUR', 'UAH'],
-      defaultCurrenciesRates: ['USD', 'EUR', 'UAH', 'BTC', 'ETH']
+      selectedCurrency: "USD",
+      defaultCurrencies: ["USD", "EUR", "UAH"],
+      defaultCurrenciesRates: ["USD", "EUR", "UAH", "BTC", "ETH"],
+      canUpdateRates: true,
+      isAddCurrencyVisible: false,
     };
   },
 
   methods: {
     getConvertedPrice(price: number) {
       if (this.rates) {
-        return 1 / (price / +this.rates[this.selectedCurrency]);
+        const rateOfCurrency = price / +this.rates[this.selectedCurrency];
+        return checkingOfDigitsAfterComa(rateOfCurrency);
       }
+    },
+
+    async updateRates() {
+      this.canUpdateRates = false;
+      try {
+        const newRatesFromServer = await getMoney();
+        this.$emit("updateRates", newRatesFromServer);
+      }
+      catch (err) {
+        this.$emit("updateRates", this.rates);
+      }
+      setTimeout(() => this.canUpdateRates = true, 5000);
+    },
+
+    updateDefaultCurrencies(newCurrency: string) {
+      this.defaultCurrenciesRates = [
+        ...this.defaultCurrenciesRates,
+        newCurrency,
+      ];
+
+      const newListOfCurrencies = [
+        ...JSON.parse(
+          localStorage.getItem('currencyRateToShow') || '[]'
+        ),
+        newCurrency,
+      ]
+
+      localStorage.setItem(
+        'currencyRateToShow',
+        JSON.stringify(newListOfCurrencies),
+      );
     }
+  },
+
+  mounted() {
+    this.defaultCurrenciesRates = [
+      ...this.defaultCurrenciesRates,
+      ...JSON.parse(localStorage.getItem('currencyRateToShow') || '[]'),
+    ];
   },
 
   computed: {
     currenciesNamesArr() {
       const allCurrenciesNames: string[] = [];
-
       for (const nameOfCurrency in this.rates) {
-        allCurrenciesNames.push(nameOfCurrency)
+        allCurrenciesNames.push(nameOfCurrency);
       }
-
       return allCurrenciesNames.sort((a, b) => a.localeCompare(b));
     },
   },
@@ -48,34 +96,47 @@ export default defineComponent({
 
 <template>
   <h1 class="title">Currency rates</h1>
+  <div class="form">
+    <form>
 
-  <form class="form">
+      <label for="from_currency" class="form__label">
+        currency:
+      </label>
 
-    <label for="from_currency" class="form__label">
-      currency:
-    </label>
+      <select v-model="selectedCurrency" id="from_currency" name="from_currency" class="form__selector">
+        <option v-for="name in defaultCurrencies" :key="name" :selected="name === selectedCurrency">
+          {{ name }}
+        </option>
+      </select>
 
-    <select v-model="selectedCurrency" id="from_currency" name="from_currency" class="form__selector">
-      <option v-for="name in defaultCurrencies" :key="name" :selected="name === selectedCurrency">
-        {{ name }}
-      </option>
-    </select>
+      <div class="flex-container">
+        <button class="button" @click.prevent="updateRates" :disabled="!canUpdateRates">
+          update
+        </button>
+        <button class="button" @click.prevent="() => isAddCurrencyVisible = true">add</button>
+      </div>
 
-    <table class="table">
-      <tr class="table__row">
-        <th class="table__head">Currency Name</th>
-        <th class="table__head">The rate in the selected currency</th>
-      </tr>
-
-      <template 
-        v-for="currency in defaultCurrenciesRates" 
-        :key="currency"
-      >
-        <tr class="table__row" v-if="currency !== selectedCurrency">
-          <td class="table__colum">{{ currency }}</td>
-          <td class="table__colum">{{ rates ? getConvertedPrice(+rates[currency]) : 'error' }}</td>
+      <table class="table">
+        <tr class="table__row">
+          <th class="table__head">Currency Name</th>
+          <th class="table__head">The rate in the selected currency</th>
         </tr>
-      </template>
-    </table>
-  </form>
+
+        <template v-for="currency in defaultCurrenciesRates" :key="currency">
+          <tr class="table__row" v-if="currency !== selectedCurrency">
+            <td class="table__colum">{{ currency }}</td>
+            <td class="table__colum">{{ rates ? getConvertedPrice(+rates[currency]) : 'error' }}</td>
+          </tr>
+        </template>
+      </table>
+    </form>
+  </div>
+
+  <AddCurrency
+    v-if="isAddCurrencyVisible"
+    :added-currencies="defaultCurrenciesRates" 
+    :available-currencies="currenciesNamesArr"
+    @add-currency="updateDefaultCurrencies"
+    @hide-component="isAddCurrencyVisible = false"
+  />
 </template>
