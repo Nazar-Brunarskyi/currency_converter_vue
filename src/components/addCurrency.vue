@@ -1,47 +1,44 @@
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
+import BlurBlock from './blurBlock.vue';
 
 interface State {
   selectedCurrency: string,
 }
 
 export default defineComponent({
-  name: 'addCurrency',
-
-  props: {
-    availableCurrencies: {
-      type: Array as PropType<string[]>,
-      required: true,
+    name: "addCurrency",
+    props: {
+        availableCurrencies: {
+            type: Array as PropType<string[]>,
+            required: true,
+        },
+        addedCurrencies: {
+            type: Array as PropType<string[]>,
+            required: true,
+        }
     },
-
-    addedCurrencies: {
-      type: Array as PropType<string[]>,
-      required: true,
-    }
-  },
-
-  emits: ["addCurrency", 'hideComponent'],
-
-  data(): State {
-    return {
-      selectedCurrency: '',
-    };
-  },
-
-  methods: {
-    updateCurrenciesList() {
-      if (this.selectedCurrency) {
-        this.$emit('addCurrency', this.selectedCurrency);
-      }
-
-      this.selectedCurrency = '';
-    }
-  }
+    components: { BlurBlock },
+    emits: ["addCurrency", "hideComponent"],
+    data(): State {
+        return {
+            selectedCurrency: "",
+        };
+    },
+    methods: {
+        updateCurrenciesList() {
+            if (this.selectedCurrency) {
+                this.$emit("addCurrency", this.selectedCurrency);
+            }
+            this.selectedCurrency = "";
+        }
+    },
 })
 </script>
 
 <template>
-  <div class="blur-blok">ddsf</div>
+  <BlurBlock />
+  
   <div class="form pop-up">
     <form>
       <label for="from_currency" class="form__label">
@@ -68,7 +65,7 @@ export default defineComponent({
 
         <button 
           class="button"
-          @click.prevent="$emit('hideComponent')"
+          @click.prevent="() => $emit('hideComponent')"
         >
           close
         </button>

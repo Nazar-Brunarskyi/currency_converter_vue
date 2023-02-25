@@ -13,7 +13,7 @@ export default defineComponent({
   components: {
     CurrencyRates,
     CurrencyConverter,
-  },
+},
 
   data(): State { 
     return {
@@ -52,4 +52,6 @@ export default defineComponent({
     :rates="rates"
     @update-rates="updateRates"
   />
+
+  <!-- <popUpVue :message="'23123'" /> -->
 </template>

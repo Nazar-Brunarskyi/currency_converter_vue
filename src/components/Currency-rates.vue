@@ -4,6 +4,7 @@ import type { Rates } from '@/types/ratesType';
 import { defineComponent, type PropType } from 'vue';
 import { checkingOfDigitsAfterComa } from '../helpers/checkingOfDigitsAfterComa'
 import AddCurrency from './addCurrency.vue';
+import PopUp from './popUp.vue';
 
 interface State {
   selectedCurrency: string,
@@ -11,6 +12,7 @@ interface State {
   defaultCurrenciesRates: string[],
   canUpdateRates: boolean,
   isAddCurrencyVisible: boolean;
+  errorMessage: string;
 }
 
 export default defineComponent({
@@ -23,7 +25,7 @@ export default defineComponent({
 
   emits: ["updateRates"],
 
-  components: { AddCurrency },
+  components: { AddCurrency, PopUp },
 
   data(): State {
     return {
@@ -32,6 +34,7 @@ export default defineComponent({
       defaultCurrenciesRates: ["USD", "EUR", "UAH", "BTC", "ETH"],
       canUpdateRates: true,
       isAddCurrencyVisible: false,
+      errorMessage: '',
     };
   },
 
@@ -51,6 +54,7 @@ export default defineComponent({
       }
       catch (err) {
         this.$emit("updateRates", this.rates);
+        this.showError('An error has sprung, cannot update rates');
       }
       setTimeout(() => this.canUpdateRates = true, 5000);
     },
@@ -72,6 +76,10 @@ export default defineComponent({
         'currencyRateToShow',
         JSON.stringify(newListOfCurrencies),
       );
+    },
+
+    showError(message: string) {
+      this.errorMessage = message;
     }
   },
 
@@ -138,5 +146,11 @@ export default defineComponent({
     :available-currencies="currenciesNamesArr"
     @add-currency="updateDefaultCurrencies"
     @hide-component="isAddCurrencyVisible = false"
+  />
+
+  <PopUp
+    v-if="errorMessage"
+    :message="errorMessage" 
+    @hide-pop-up="() => errorMessage = ''"
   />
 </template>

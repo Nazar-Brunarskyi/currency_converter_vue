@@ -2,6 +2,7 @@
 import { defineComponent, type PropType } from 'vue';
 import type { Rates } from '../types/ratesType';
 import { checkingOfDigitsAfterComa } from '../helpers/checkingOfDigitsAfterComa';
+import PopUp from './popUp.vue';
 
 interface State {
   currentRateOfCurrencyToConvert: number,
@@ -11,6 +12,7 @@ interface State {
   amountOfCurrencyToConvert: number,
   amountOfConvertedCurrency: number,
   conversionLimit: number,
+  errorMessage: string;
 }
 
 export default defineComponent({
@@ -21,6 +23,8 @@ export default defineComponent({
     }
   },
 
+  components: { PopUp },
+
   data(): State { 
     return {
       currencyToConvert: 'USD',
@@ -29,7 +33,8 @@ export default defineComponent({
       currentRateOfConvertedCurrency : 0,
       amountOfCurrencyToConvert: 0,
       amountOfConvertedCurrency: 0,
-      conversionLimit: 10000
+      conversionLimit: 10000,
+      errorMessage: '',
     };
   },
 
@@ -49,7 +54,7 @@ export default defineComponent({
         incomingInput.focus();
 
         if (this.isLimitReached) {
-          this.calculateTheBiggestAmount();
+          this.setTheBiggestAmount();
         }
       }
     },
@@ -62,7 +67,7 @@ export default defineComponent({
         outcomingInput.focus();
 
         if (this.isLimitReached) {
-          this.calculateTheBiggestAmount();
+          this.setTheBiggestAmount();
         }
       }
     },
@@ -73,8 +78,9 @@ export default defineComponent({
       }
       
       if (this.isLimitReached) {
-        this.calculateTheBiggestAmount();
+        this.setTheBiggestAmount();
 
+        this.showError('you can\'t convert an amount bigger than 10 000$, the max amount will be set automatically');
         return;
       }
 
@@ -123,7 +129,7 @@ export default defineComponent({
   },
 
   methods: {
-    calculateTheBiggestAmount() {
+    setTheBiggestAmount() {
       if (this.rates) {
         this.amountOfCurrencyToConvert = +(this.conversionLimit * +this.rates[this.currencyToConvert])
           .toFixed(2);
@@ -132,86 +138,97 @@ export default defineComponent({
           .toFixed(2);
       }
     },
+
+    showError(message: string) {
+      this.errorMessage = message;
+    },
   }
 });
 </script>
 
 <template>
     <h1 class="title">Currency converter</h1>
-  <div class="form">
-    <form>
-      <label for="from_currency" class="form__label">currency to conversion:</label>
-      <select 
-        id="from_currency" 
-        name="from_currency"
-        class="form__selector"
-        v-model="currencyToConvert"
-      >
-        <option 
-          v-for="name in currenciesNamesArr" 
-          :key="name"
-          :value="name"
-          :selected="name === 'USD'"
+
+    <div class="form">
+      <form>
+        <label for="from_currency" class="form__label">currency to conversion:</label>
+        <select 
+          id="from_currency" 
+          name="from_currency"
+          class="form__selector"
+          v-model="currencyToConvert"
         >
-        {{ name }}
-        </option>
-      </select>
+          <option 
+            v-for="name in currenciesNamesArr" 
+            :key="name"
+            :value="name"
+            :selected="name === 'USD'"
+          >
+          {{ name }}
+          </option>
+        </select>
 
-      <label for="to_currency" class="form__label">converted currency:</label>
-      <select 
-        id="to_currency" 
-        name="to_currency" 
-        class="form__selector"
-        v-model="convertedCurrency"
+        <label for="to_currency" class="form__label">converted currency:</label>
+        <select 
+          id="to_currency" 
+          name="to_currency" 
+          class="form__selector"
+          v-model="convertedCurrency"
 
-      >
-        <option 
-          v-for="name in currenciesNamesArr" 
-          :key="name"
-          :value="name"
-          :selected="name === 'BTC'"
         >
-        {{ name }}
-        </option>
-      </select>
+          <option 
+            v-for="name in currenciesNamesArr" 
+            :key="name"
+            :value="name"
+            :selected="name === 'BTC'"
+          >
+          {{ name }}
+          </option>
+        </select>
 
-      <label 
-        for="from_amount"
-        class="form__label"
-      >
-        Amount of incoming currency:
-      </label>
+        <label 
+          for="from_amount"
+          class="form__label"
+        >
+          Amount of incoming currency:
+        </label>
 
-      <input 
-        ref="incoming__currency"
-        type="number" 
-        class="form__input"
-        id="from_amount" 
-        name="from_amount" 
-        min="0"
-        step="0.1"
-        v-model="amountOfCurrencyToConvert"
-        required
-      >
+        <input 
+          ref="incoming__currency"
+          type="number" 
+          class="form__input"
+          id="from_amount" 
+          name="from_amount" 
+          min="0"
+          step="0.1"
+          v-model="amountOfCurrencyToConvert"
+          required
+        >
 
-      <label 
-        for="to_amount"
-        class="form__label"
-      >
-        Amount of converted currency:
-      </label>
+        <label 
+          for="to_amount"
+          class="form__label"
+        >
+          Amount of converted currency:
+        </label>
 
-      <input 
-        ref="outcoming__currency"
-        type="number"
-        class="form__input"
-        id="to_amount"
-        name="to_amount"
-        min="0"
-        step="0.01"
-        v-model="amountOfConvertedCurrency"
-        required
-      >
-    </form>
-  </div>
+        <input 
+          ref="outcoming__currency"
+          type="number"
+          class="form__input"
+          id="to_amount"
+          name="to_amount"
+          min="0"
+          step="0.01"
+          v-model="amountOfConvertedCurrency"
+          required
+        >
+      </form>
+    </div>
+    
+    <PopUp 
+      v-if="errorMessage"
+      :message="errorMessage"
+      @hide-pop-up="() => errorMessage = ''"
+    />
 </template>
