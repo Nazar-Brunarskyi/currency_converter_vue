@@ -1,5 +1,12 @@
 @import 'variables.scss';
 @import 'reset.scss';
+@import './title.scss';
+@import './form.scss';
+@import './table.scss';
+@import './flex-container.scss';
+@import './button.scss';
+@import './blur-block.scss';
+@import './pop-up.scss';
 
 body {
 	font-family: 'Segoe UI', sans-serif;
@@ -8,132 +15,3 @@ body {
 	padding-bottom: 300px;
 }
 
-.title {
-	text-align: center;
-	margin: $basic-margin-m;
-	font-size: 36px;
-	font-weight: bold;
-}
-
-.form {
-	margin: 0 auto;
-	max-width: 600px;
-	padding: 30px;
-	border-radius: 10px;
-	background-color: #fff;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-}
-
-.form__label {
-	display: inline-block;
-	font-size: 18px;
-	margin-bottom: 10px;
-}
-
-.form__selector,
-.form__input {
-	padding: 10px;
-	border-radius: 5px;
-	font-size: 16px;
-	margin: $margin-for-unfocused-input;
-	display: block;
-	width: 100%;
-	background-color: #f9f9f9;
-	border: 1px solid #ddd;
-	outline: none;
-}
-
-.form__selector:focus,
-.form__input:focus {
-	border: 2px solid #ddd;
-	margin: $margin-for-focused-input;
-}
-
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-	border-radius: 5px;
-	overflow: hidden;
-}
-
-th,
-td {
-	padding: 8px;
-	text-align: left;
-	border: 1px solid #ddd;
-}
-
-th {
-	font-weight: bold;
-	background-color: #f1f1f1;
-}
-
-tr:nth-child(even) {
-	background-color: #f1f1f1;
-}
-
-tr:hover {
-	background-color: #ddd;
-}
-
-.flex-container {
-	display: flex;
-	justify-content: space-around;
-
-	&--between {
-		justify-content: space-between;
-	}
-}
-
-.button {
-	display: inline-block;
-	width: 30%;
-	margin-bottom: $button-margin-s;
-	background-color: #007BFF;
-	color: #fff;
-	padding: 10px 20px;
-	border: none;
-	border-radius: 5px;
-	font-size: 18px;
-	transition: background-color 0.3s ease;
-	cursor: pointer;
-
-	&:hover {
-		background-color: #0069D9;
-	}
-
-	&:disabled {
-		background-color: #007bff7d;
-	}
-}
-
-.blur-block {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100vh;
-	z-index: 2;
-	background-color: rgba(0, 0, 0, 0.433);
-}
-
-.pop-up {
-	position: fixed;
-	width: 100%;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	z-index: 3;
-
-	&__message {
-		font-size: 18px;
-		line-height: 30px;
-		padding: 10px 20px $basic-margin-m;
-	}
-
-	&__button {
-		display: block;
-		margin-left: auto;
-	}
-}

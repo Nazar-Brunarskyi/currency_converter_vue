@@ -38,6 +38,7 @@ export default defineComponent({
       }
 
       this.selectedCurrency = "";
+      this.$emit('hideComponent');
     },
   },
 })
@@ -75,7 +76,10 @@ export default defineComponent({
           add to list
         </button>
 
-        <button class="button" @click.prevent="() => $emit('hideComponent')">
+        <button 
+          class="button" 
+          @click.prevent="() => $emit('hideComponent')"
+        >
           close
         </button>
       </div>

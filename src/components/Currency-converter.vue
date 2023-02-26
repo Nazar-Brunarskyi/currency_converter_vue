@@ -114,6 +114,8 @@ export default defineComponent({
     },
 
     newAmountOfConvertedCurrency() {
+      // console.log(this.currentRateOfCurrencyToConvert);
+      
       return this.amountOfConvertedCurrency
         / (this.currentRateOfConvertedCurrency / this.currentRateOfCurrencyToConvert);
     },

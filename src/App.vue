@@ -6,7 +6,7 @@ import CurrencyConverter from './components/Currency-converter.vue'
 import type { Rates } from './types/ratesType'
 
 interface State {
-  rates: Rates;
+  rates: Rates | null;
 }
 
 export default defineComponent({
@@ -17,19 +17,25 @@ export default defineComponent({
 
   data(): State { 
     return {
-      rates: {},
+      rates: null,
     };
   },
 
   async mounted() {
+    const fiveHours = 18000000;
+    const lastLoading = JSON.parse(localStorage.getItem('lastLoading') || '0');
+    const shouldBeLoadedAgain = new Date().getTime() - lastLoading > fiveHours;
+
     let cachedExchangeRates = JSON.parse(localStorage.getItem('exchangeRates') || 'null')
 
-    if (!cachedExchangeRates) {
+    if (!cachedExchangeRates || shouldBeLoadedAgain) {
       const ratesFromServer = await getMoney();
       
       localStorage.setItem('exchangeRates', JSON.stringify(ratesFromServer))
 
       cachedExchangeRates = ratesFromServer;
+
+      localStorage.setItem('lastLoading', JSON.stringify(new Date().getTime()))
     }
 
     this.rates = cachedExchangeRates
@@ -45,9 +51,9 @@ export default defineComponent({
 </script>
 
 <template>
-  <CurrencyConverter :rates="rates"/>
+  <CurrencyConverter :rates="rates" v-if="rates"/>
 
-  <CurrencyRates 
+  <CurrencyRates
     :rates="rates"
     @update-rates="updateRates"
   />
