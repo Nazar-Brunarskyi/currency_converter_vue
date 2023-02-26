@@ -3,8 +3,8 @@ import { getMoney } from '@/API/getData';
 import type { Rates } from '@/types/ratesType';
 import { defineComponent, type PropType } from 'vue';
 import { checkingOfDigitsAfterComa } from '../helpers/checkingOfDigitsAfterComa'
-import AddCurrency from './addCurrency.vue';
-import PopUp from './popUp.vue';
+import AddCurrency from './add-currency.vue';
+import PopUp from './pop-up.vue';
 
 interface State {
   selectedCurrency: string,
@@ -16,6 +16,8 @@ interface State {
 }
 
 export default defineComponent({
+  components: { AddCurrency, PopUp },
+
   props: {
     rates: {
       type: Object as PropType<Rates | null>,
@@ -24,8 +26,6 @@ export default defineComponent({
   },
 
   emits: ["updateRates"],
-
-  components: { AddCurrency, PopUp },
 
   data(): State {
     return {
@@ -48,6 +48,7 @@ export default defineComponent({
 
     async updateRates() {
       this.canUpdateRates = false;
+
       try {
         const newRatesFromServer = await getMoney();
         this.$emit("updateRates", newRatesFromServer);
@@ -56,6 +57,7 @@ export default defineComponent({
         this.$emit("updateRates", this.rates);
         this.showError('An error has sprung, cannot update rates');
       }
+
       setTimeout(() => this.canUpdateRates = true, 5000);
     },
 
@@ -93,9 +95,11 @@ export default defineComponent({
   computed: {
     currenciesNamesArr() {
       const allCurrenciesNames: string[] = [];
+
       for (const nameOfCurrency in this.rates) {
         allCurrenciesNames.push(nameOfCurrency);
       }
+
       return allCurrenciesNames.sort((a, b) => a.localeCompare(b));
     },
   },
@@ -104,24 +108,43 @@ export default defineComponent({
 
 <template>
   <h1 class="title">Currency rates</h1>
+  
   <div class="form">
     <form>
-
       <label for="from_currency" class="form__label">
         currency:
       </label>
 
-      <select v-model="selectedCurrency" id="from_currency" name="from_currency" class="form__selector">
-        <option v-for="name in defaultCurrencies" :key="name" :selected="name === selectedCurrency">
+      <select
+        v-model="selectedCurrency"
+        id="from_currency"
+        name="from_currency"
+        class="form__selector"
+      >
+        <option 
+          v-for="name in defaultCurrencies" 
+          :key="name" 
+          :selected="name === selectedCurrency"
+        >
           {{ name }}
         </option>
       </select>
 
       <div class="flex-container">
-        <button class="button" @click.prevent="updateRates" :disabled="!canUpdateRates">
+        <button 
+          class="button"
+          @click.prevent="updateRates" 
+          :disabled="!canUpdateRates"
+        >
           update
         </button>
-        <button class="button" @click.prevent="() => isAddCurrencyVisible = true">add</button>
+
+        <button 
+          class="button"
+          @click.prevent="() => isAddCurrencyVisible = true"
+        >
+          add
+        </button>
       </div>
 
       <table class="table">

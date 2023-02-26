@@ -1,16 +1,19 @@
 <script lang="ts">
 import { defineComponent, type PropType } from 'vue';
-import BlurBlock from './blurBlock.vue';
+import BlurBlock from './Blur-block.vue';
 
 export default defineComponent({
+  components: { BlurBlock },
+
   name: "popUp",
+
   props: {
     message: {
       type: String as PropType<string>,
       required: true,
     }
   },
-  components: { BlurBlock },
+
   emits: ["hidePopUp"],
 })
 </script>

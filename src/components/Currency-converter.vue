@@ -2,7 +2,7 @@
 import { defineComponent, type PropType } from 'vue';
 import type { Rates } from '../types/ratesType';
 import { checkingOfDigitsAfterComa } from '../helpers/checkingOfDigitsAfterComa';
-import PopUp from './popUp.vue';
+import PopUp from './pop-up.vue';
 
 interface State {
   currentRateOfCurrencyToConvert: number,
@@ -16,14 +16,14 @@ interface State {
 }
 
 export default defineComponent({
+  components: { PopUp },
+
   props: {
     rates: {
       type: Object as PropType<Rates | null>,
       required: true,
     }
   },
-
-  components: { PopUp },
 
   data(): State { 
     return {
@@ -90,7 +90,7 @@ export default defineComponent({
     },
 
     amountOfConvertedCurrency() {
-      if (this.$refs['incoming__currency'] !== document.activeElement) {         
+      if (this.$refs['incoming__currency'] !== document.activeElement) {
         this.amountOfCurrencyToConvert = checkingOfDigitsAfterComa(this.newAmountOfConvertedCurrency);
       }
     },
@@ -101,7 +101,7 @@ export default defineComponent({
       const allCurrenciesNames: string[] = [];
 
       for (const nameOfCurrency in this.rates) {
-        allCurrenciesNames.push(nameOfCurrency)
+        allCurrenciesNames.push(nameOfCurrency);
       }
 
       return allCurrenciesNames.sort((a, b) => a.localeCompare(b));
@@ -110,12 +110,12 @@ export default defineComponent({
     newAmountConvertedCurrency() {
       return this.amountOfCurrencyToConvert
         / this.currentRateOfCurrencyToConvert
-        * this.currentRateOfConvertedCurrency
+        * this.currentRateOfConvertedCurrency;
     },
 
     newAmountOfConvertedCurrency() {
       return this.amountOfConvertedCurrency
-        / (this.currentRateOfConvertedCurrency / this.currentRateOfCurrencyToConvert)
+        / (this.currentRateOfConvertedCurrency / this.currentRateOfCurrencyToConvert);
     },
 
     isLimitReached() {
@@ -125,7 +125,7 @@ export default defineComponent({
       }
 
       return false;
-    }
+    },
   },
 
   methods: {
@@ -151,7 +151,10 @@ export default defineComponent({
 
     <div class="form">
       <form>
-        <label for="from_currency" class="form__label">currency to conversion:</label>
+        <label for="from_currency" class="form__label">
+          currency to conversion:
+        </label>
+
         <select 
           id="from_currency" 
           name="from_currency"
@@ -168,13 +171,15 @@ export default defineComponent({
           </option>
         </select>
 
-        <label for="to_currency" class="form__label">converted currency:</label>
+        <label for="to_currency" class="form__label">
+          converted currency:
+        </label>
+
         <select 
           id="to_currency" 
           name="to_currency" 
           class="form__selector"
           v-model="convertedCurrency"
-
         >
           <option 
             v-for="name in currenciesNamesArr" 
@@ -204,7 +209,7 @@ export default defineComponent({
           v-model="amountOfCurrencyToConvert"
           required
         >
-
+        
         <label 
           for="to_amount"
           class="form__label"

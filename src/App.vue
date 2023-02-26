@@ -6,7 +6,7 @@ import CurrencyConverter from './components/Currency-converter.vue'
 import type { Rates } from './types/ratesType'
 
 interface State {
-  rates: Rates | null;
+  rates: Rates;
 }
 
 export default defineComponent({
@@ -17,7 +17,7 @@ export default defineComponent({
 
   data(): State { 
     return {
-      rates: null,
+      rates: {},
     };
   },
 
@@ -40,18 +40,15 @@ export default defineComponent({
       this.rates = newRates;
       localStorage.setItem('exchangeRates', JSON.stringify(newRates))
     }
-  }
+  },
 });
-
 </script>
 
 <template>
-  <CurrencyConverter :rates="rates" v-if="rates"/>
+  <CurrencyConverter :rates="rates"/>
 
   <CurrencyRates 
     :rates="rates"
     @update-rates="updateRates"
   />
-
-  <!-- <popUpVue :message="'23123'" /> -->
 </template>
