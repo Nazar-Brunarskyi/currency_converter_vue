@@ -11,6 +11,7 @@ interface State {
   defaultCurrencies: string[],
   defaultCurrenciesRates: string[],
   canUpdateRates: boolean,
+  areRatesLoading: boolean
   isAddCurrencyVisible: boolean;
   errorMessage: string;
 }
@@ -33,6 +34,7 @@ export default defineComponent({
       defaultCurrencies: ["USD", "EUR", "UAH"],
       defaultCurrenciesRates: ["USD", "EUR", "UAH", "BTC", "ETH"],
       canUpdateRates: true,
+      areRatesLoading: false,
       isAddCurrencyVisible: false,
       errorMessage: '',
     };
@@ -50,6 +52,7 @@ export default defineComponent({
       this.canUpdateRates = false;
 
       try {
+        this.areRatesLoading = true;
         const newRatesFromServer = await getMoney();
         this.$emit("updateRates", newRatesFromServer);
       }
@@ -59,6 +62,7 @@ export default defineComponent({
       }
 
       setTimeout(() => this.canUpdateRates = true, 5000);
+      this.areRatesLoading = false;
     },
 
     updateDefaultCurrencies(newCurrency: string) {
@@ -136,7 +140,16 @@ export default defineComponent({
           @click.prevent="updateRates" 
           :disabled="!canUpdateRates"
         >
-          update
+          <template v-if="!areRatesLoading">
+            update
+          </template>
+
+          <img 
+            v-else 
+            src="../../public/Rolling-1s-200px.svg" 
+            alt="loader"
+            class="loader"
+          >
         </button>
 
         <button 
