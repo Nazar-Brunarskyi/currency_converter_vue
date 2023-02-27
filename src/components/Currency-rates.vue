@@ -146,7 +146,7 @@ export default defineComponent({
 
           <img 
             v-else 
-            src="../../public/Rolling-1s-200px.svg" 
+            src="../../public/loaders/Loader.svg" 
             alt="loader"
             class="loader"
           >

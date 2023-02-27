@@ -51,10 +51,19 @@ export default defineComponent({
 </script>
 
 <template>
-  <CurrencyConverter :rates="rates" v-if="rates"/>
+  <template v-if="rates">
+    <CurrencyConverter :rates="rates"/>
 
-  <CurrencyRates
-    :rates="rates"
-    @update-rates="updateRates"
-  />
+    <CurrencyRates
+      :rates="rates"
+      @update-rates="updateRates"
+    />
+  </template>
+
+  <img
+    v-else
+    src="../public/loaders/Loader-blue.svg" 
+    alt="loader" 
+    class="loader loader-main"
+  >
 </template>
