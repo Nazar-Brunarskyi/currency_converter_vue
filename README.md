@@ -1,4 +1,4 @@
-# currency_converter_vue Demo link ⬇
+# currency converter vue Demo link ⬇
 [DEMOLINK](https://nazar-brunarskyi.github.io/currency_converter_vue/)
 
 # about the app
