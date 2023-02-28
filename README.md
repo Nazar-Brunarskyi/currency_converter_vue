@@ -20,7 +20,7 @@ https://user-images.githubusercontent.com/115641582/221786010-9cb19556-51d4-4490
    * Vite
 
 # To run it
-clone it with `git clone https://github.com/Nazar-Brunarskyi/currency_converter_vue3.git`
+clone it with `git clone https://github.com/Nazar-Brunarskyi/currency_converter_vue.git`
 
 instal appropriate packages `npm i`
 
