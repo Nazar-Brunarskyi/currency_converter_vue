@@ -1,46 +1,26 @@
-# currency_converter_vue
+# currency_converter_vue Demo link ⬇
+[DEMOLINK](https://nazar-brunarskyi.github.io/currency_converter_vue/)
 
 This template should help get you started developing with Vue 3 in Vite.
 
-## Recommended IDE Setup
+#about the app
+you can use the application to convert currency from one kind to another. Also here is available a board with rates of currencies. It's possible to add currency to the board and update the rates but you can do it once in five seconds.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## stack 
+    * HTML
+    * Css(SCSS)
+    * JavaScript(typescript)
+    * Vue.js 3
 
-## Type Support for `.vue` Imports in TS
+## technologies
+    * BEM
+    * API
+    * currencyfreaks API
+    *Vite
 
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin) to make the TypeScript language service aware of `.vue` types.
+# To run it
+clone it with `git clone https://github.com/Nazar-Brunarskyi/currency_converter_vue.git`
 
-If the standalone TypeScript plugin doesn't feel fast enough to you, Volar has also implemented a [Take Over Mode](https://github.com/johnsoncodehk/volar/discussions/471#discussioncomment-1361669) that is more performant. You can enable it by the following steps:
+instal appropriate packages `npm i`
 
-1. Disable the built-in TypeScript Extension
-    1) Run `Extensions: Show Built-in Extensions` from VSCode's command palette
-    2) Find `TypeScript and JavaScript Language Features`, right click and select `Disable (Workspace)`
-2. Reload the VSCode window by running `Developer: Reload Window` from the command palette.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Type-Check, Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+use `npm run dev` to run it
