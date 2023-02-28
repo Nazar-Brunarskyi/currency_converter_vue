@@ -4,6 +4,9 @@
 # about the app
 you can use the application to convert currency from one kind to another. Also here is available a board with rates of currencies. It's possible to add currency to the board and update the rates but you can do it once in five seconds.
 
+# preview
+money - Made with Clipchamp
+
 ## stack 
    * HTML
    * Css(SCSS)
